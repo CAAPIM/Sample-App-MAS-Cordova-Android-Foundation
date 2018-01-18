@@ -1,0 +1,21 @@
+{
+  "prepare_queue": {
+    "installed": [],
+    "uninstalled": []
+  },
+  "config_munge": {
+    "files": {}
+  },
+  "installed_plugins": {
+    "cordova-plugin-whitelist": {
+      "PACKAGE_NAME": "com.ca.cordova.foundation.sample"
+    },
+    "phonegap-plugin-barcodescanner": {
+      "PACKAGE_NAME": "com.ca.cordova.foundation.sample"
+    },
+    "cordova-plugin-mas-core": {
+      "PACKAGE_NAME": "com.ca.cordova.foundation.sample"
+    }
+  },
+  "dependent_plugins": {}
+}
