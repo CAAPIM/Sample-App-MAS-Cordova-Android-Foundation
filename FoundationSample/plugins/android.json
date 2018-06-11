@@ -8,13 +8,10 @@
   },
   "installed_plugins": {
     "cordova-plugin-whitelist": {
-      "PACKAGE_NAME": "com.ca.cordova.foundation.sample"
-    },
-    "phonegap-plugin-barcodescanner": {
-      "PACKAGE_NAME": "com.ca.cordova.foundation.sample"
+      "PACKAGE_NAME": "com.ca.mas.cordova.foundationsample"
     },
     "cordova-plugin-mas-core": {
-      "PACKAGE_NAME": "com.ca.cordova.foundation.sample"
+      "PACKAGE_NAME": "com.ca.mas.cordova.foundationsample"
     }
   },
   "dependent_plugins": {}
