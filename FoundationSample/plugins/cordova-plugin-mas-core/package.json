@@ -1,6 +1,6 @@
 {
   "name": "cordova-plugin-mas-core",
-  "version": "1.5.0",
+  "version": "1.6.10",
   "description": "Cordova MAS Plugin",
   "cordova": {
     "id": "cordova-plugin-mas-core",
@@ -26,5 +26,10 @@
   "bugs": {
     "url": "https://github.com/CAAPIM/MAS-Foundation-Cordova/issues"
   },
-  "homepage": "https://github.com/CAAPIM/MAS-Foundation-Cordova#readme"
+  "homepage": "https://github.com/CAAPIM/MAS-Foundation-Cordova#readme",
+  "dependencies": {
+    "filehound": "^1.16.2",
+    "plist": "^3.0.1",
+    "xcode": "^1.0.0"
+  }
 }
