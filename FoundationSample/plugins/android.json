@@ -8,10 +8,10 @@
   },
   "installed_plugins": {
     "cordova-plugin-whitelist": {
-      "PACKAGE_NAME": "com.ca.mas.cordova.foundationsample"
+      "PACKAGE_NAME": "com.ca.mas.sample.core"
     },
     "cordova-plugin-mas-core": {
-      "PACKAGE_NAME": "com.ca.mas.cordova.foundationsample"
+      "PACKAGE_NAME": "com.ca.mas.sample.core"
     }
   },
   "dependent_plugins": {}
