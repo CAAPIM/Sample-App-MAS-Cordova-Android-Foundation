@@ -9,8 +9,8 @@
   },
   "cordova-plugin-mas-core": {
     "source": {
-      "type": "registry",
-      "id": "cordova-plugin-mas-core"
+      "type": "local",
+      "path": "D:\\APIM_CLIENT\\MAS-Cordova\\FoundationSample\\node_modules\\cordova-plugin-mas-core"
     },
     "is_top_level": true,
     "variables": {}
