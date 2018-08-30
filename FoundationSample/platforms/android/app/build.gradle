@@ -41,6 +41,21 @@ allprojects {
         jcenter()
     }
 }
+repositories {
+    jcenter()
+    flatDir {
+        dirs 'libs'
+    }
+    maven { url 'https://maven.fabric.io/public' }
+
+    maven {
+        credentials {
+            username 'manutripathi'
+            password '07224c1635c1c42bf9359f2e1579f7a41be366bf'
+        }
+        url 'https://dl.bintray.com/caapim/maven'
+    }
+}
 
 task wrapper(type: Wrapper) {
     gradleVersion = '4.1.0'
@@ -260,8 +275,8 @@ dependencies {
     implementation fileTree(dir: 'libs', include: '*.jar')
     // SUB-PROJECT DEPENDENCIES START
     implementation(project(path: ":CordovaLib"))
-    compile "com.ca:mas:1.7.10"
-    compile "com.ca:masui:1.7.10"
+    implementation "com.ca:mas:1.8.00"
+    implementation "com.ca:masui:1.8.00"
     // SUB-PROJECT DEPENDENCIES END
 }
 
