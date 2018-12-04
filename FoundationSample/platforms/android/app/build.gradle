@@ -265,8 +265,8 @@ dependencies {
     implementation fileTree(dir: 'libs', include: '*.jar')
     // SUB-PROJECT DEPENDENCIES START
     implementation(project(path: ":CordovaLib"))
-    compile "com.ca:mas:1.9.00"
-    compile "com.ca:masui:1.9.00"
+    implementation "com.ca:mas:1.9.00"
+    implementation "com.ca:masui:1.9.00"
     // SUB-PROJECT DEPENDENCIES END
 }
 
