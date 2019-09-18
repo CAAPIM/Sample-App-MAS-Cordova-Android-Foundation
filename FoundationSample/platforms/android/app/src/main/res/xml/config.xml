@@ -16,6 +16,9 @@
     <feature name="MASPluginApplication">
         <param name="android-package" value="com.ca.mas.cordova.core.MASPluginApplication" />
     </feature>
+    <feature name="Chooser">
+        <param name="android-package" value="com.cyph.cordova.Chooser" />
+    </feature>
     <name>FoundationSample</name>
     <description>
         A sample Apache Cordova application that responds to the deviceready event.

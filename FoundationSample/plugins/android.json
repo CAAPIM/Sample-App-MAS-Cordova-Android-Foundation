@@ -12,6 +12,9 @@
     },
     "cordova-plugin-mas-core": {
       "PACKAGE_NAME": "com.ca.mas.sample.foundation"
+    },
+    "cordova-plugin-chooser": {
+      "PACKAGE_NAME": "com.ca.mas.sample.foundation"
     }
   },
   "dependent_plugins": {}
