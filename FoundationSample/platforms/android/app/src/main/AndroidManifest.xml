@@ -1,24 +1,19 @@
 <?xml version='1.0' encoding='utf-8'?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.ca.mas.sample.foundation"
     android:hardwareAccelerated="true"
     android:sharedUserId="com.ca.mas.sample.shared"
     android:versionCode="10000"
     android:versionName="1.0.0">
 
-    <supports-screens
-        android:anyDensity="true"
-        android:largeScreens="true"
-        android:normalScreens="true"
-        android:resizeable="true"
-        android:smallScreens="true"
-        android:xlargeScreens="true" />
-    <uses-permission android:name="android.permission.INTERNET" />
     <application
         android:hardwareAccelerated="true"
-        android:icon="@mipmap/icon"
+        android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:supportsRtl="true">
+        android:largeHeap="true"
+        android:supportsRtl="true"
+        android:usesCleartextTraffic="true">
         <activity
             android:name="MainActivity"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale"
@@ -31,6 +26,19 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name="net.openid.appauth.RedirectUriReceiverActivity"
+            tools:node="replace">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:scheme="camsso" />
+            </intent-filter>
+        </activity>
+
         <service
             android:name="com.ca.mas.core.storage.sharedstorage.MASAuthenticatorService"
             android:exported="false">
@@ -46,8 +54,15 @@
                 android:resource="@xml/authenticator" />
         </service>
     </application>
-    <uses-sdk android:targetSdkVersion="27" />
+    <supports-screens
+        android:anyDensity="true"
+        android:largeScreens="true"
+        android:normalScreens="true"
+        android:resizeable="true"
+        android:smallScreens="true"
+        android:xlargeScreens="true" />
 
+    <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
@@ -55,4 +70,7 @@
     <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS" />
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission." />
 </manifest>
