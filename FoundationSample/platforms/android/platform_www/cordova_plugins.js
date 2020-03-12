@@ -115,7 +115,7 @@ cordova.define('cordova/plugin_list', function(require, exports, module) {
   ];
   module.exports.metadata = {
     "cordova-plugin-whitelist": "1.3.4",
-    "cordova-plugin-mas-core": "2.0.00",
+    "cordova-plugin-mas-core": "2.1.0",
     "cordova-plugin-chooser": "1.2.5"
   };
 });

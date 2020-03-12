@@ -1,22 +1,22 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <title>Home Page</title>
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
-    <link rel="stylesheet" href="http://code.jquery.com/mobile/1.2.0/jquery.mobile-1.2.0.min.css"/>
-    <script src="http://code.jquery.com/jquery-1.8.2.min.js"></script>
-    <script src="http://code.jquery.com/mobile/1.2.0/jquery.mobile-1.2.0.min.js"></script>
-    <meta charset="utf-8">
-    <!-- iPad/iPhone specific css below, add after your main css >
-     <link rel="stylesheet" media="only screen and (max-device-width: 1024px)" href="ipad.css" type="text/css" />
-     <link rel="stylesheet" media="only screen and (max-device-width: 480px)" href="iphone.css" type="text/css" />
-     -->
-    <!-- If your application is targeting iOS BEFORE 4.0 you MUST put json2.js from http://www.JSON.org/json2.js into your www directory and include it here -->
-    <script type="text/javascript" charset="utf-8" src="cordova.js"></script>
-    <script type="text/javascript" charset="utf-8"
-            src="plugins/cordova-plugin-mas-core/www/MASPlugin.js"></script>
-    <script type="text/javascript">
+    <head>
+        <title>Home Page</title>
+        <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+        <link rel="stylesheet" href="http://code.jquery.com/mobile/1.2.0/jquery.mobile-1.2.0.min.css"/>
+        <script src="http://code.jquery.com/jquery-1.8.2.min.js"></script>
+        <script src="http://code.jquery.com/mobile/1.2.0/jquery.mobile-1.2.0.min.js"></script>
+        <meta charset="utf-8">
+            <!-- iPad/iPhone specific css below, add after your main css >
+             <link rel="stylesheet" media="only screen and (max-device-width: 1024px)" href="ipad.css" type="text/css" />
+             <link rel="stylesheet" media="only screen and (max-device-width: 480px)" href="iphone.css" type="text/css" />
+             -->
+            <!-- If your application is targeting iOS BEFORE 4.0 you MUST put json2.js from http://www.JSON.org/json2.js into your www directory and include it here -->
+            <script type="text/javascript" charset="utf-8" src="cordova.js"></script>
+            <script type="text/javascript" charset="utf-8"
+                src="plugins/cordova-plugin-mas-core/www/MASPlugin.js"></script>
+            <script type="text/javascript">
                 // If you want to prevent dragging, uncomment this section
                 /*
                  function preventBehavior(e)
@@ -45,9 +45,8 @@
             }
             
             
-
-    </script>
-    <script type="text/javascript">
+                </script>
+            <script type="text/javascript">
                 $(document).ready(function() {
                                   $("#scan").bind("click", function(event, ui) {
                                                   
@@ -1194,14 +1193,19 @@
                                                                       var host = thisElement.find("input[name='host']").val().trim();
                                                                       var isPublic = thisElement.find("select[name='isPublic']").val();
                                                                       var trustPublicPKI = thisElement.find("select[name='trustPublicPKI']").val();
-                                                                      var certificate = thisElement.find("input[name='certificate']").val().trim();
+                                                                      
                                                                       var publicKeyHash = thisElement.find("input[name='publicKeyHash']").val().trim();
+                                                                      var pinningMode = parsePinningMode(thisElement.find("select[name='pinningMode']").val());
+                                                                      var certificateArray = splitCertificateString(thisElement.find("input[name='certificate']").val().trim()); 
                                                                       
                                                                       config.setHost(host);
                                                                       config.setPublic(isPublic);
                                                                       config.setTrustPublicPKI(trustPublicPKI);
-                                                                      config.addCertificate(certificate);
+                                                                      config.setPinningMode(pinningMode);
                                                                       config.addPublicKeyHash(publicKeyHash);
+                                                                      for(var i = 0; i < certificateArray.length;i++){
+                                                                          config.addCertificate(certificateArray[i]);
+                                                                        }
                                                                       
                                                                       MAS.setSecurityConfiguration(function(result) {
                                                                                                    thisElement.removeClass("success").removeClass("failure").addClass("success");
@@ -1371,7 +1375,7 @@
                                                                multipart.addFormData("age",age);
                                                                
                                                                if(fileDetails && fileDetails.length !== 0){
-                                                               multipart.addFiles(fileDetails.fileName,fileDetails.filePath,fileDetails.fileMimeType,fileDetails.fileName,fileDetails.data);
+                                                               multipart.addFiles(fileDetails.fileName,fileDetails.fileMimeType,fileDetails.fileName,fileDetails.data);
                                                                fileDetails = {};
                                                                }
                                                                
@@ -1412,6 +1416,23 @@
                                   return MASPlugin.MASRequestResponseType.MASRequestResponseTypeUnknown;
                                   }
                                   }
+
+                                  function parsePinningMode(pinningMode) {
+                                       if(pinningMode == "PublicKeyHash") {
+                                            return MASPlugin.MASSecuritySSLPinningMode.MASSecuritySSLPinningModePublicKeyHash;
+                                       }
+                                       else if(pinningMode == "CertificateChain"){
+                                            return MASPlugin.MASSecuritySSLPinningMode.MASSecuritySSLPinningModeCertificate;
+                                       }
+                                       else if(pinningMode == "IntermediateCertificate"){
+                                            return MASPlugin.MASSecuritySSLPinningMode.MASSecuritySSLPinningModeIntermediateCertificate;
+                                       }
+                                   }
+
+                                   function splitCertificateString(certificateString) {
+                                        return certificateString.split(",");
+                                   }
+
                                   
                                   function resetAction(element) {
                                   element.find("textarea.error").hide();
@@ -1453,9 +1474,8 @@
                                   });
                                   
                                   
-
-    </script>
-    <script type="text/javascript">
+                </script>
+            <script type="text/javascript">
                 function getErrorMessage(error) {
                     var errorMsgToDisplay = "";
                     if (error != null && error != undefined && error != "") {
@@ -1479,9 +1499,8 @@
                 }
             
             
-
-    </script>
-    <style type="text/css">
+                </script>
+            <style type="text/css">
                 .success {
                     background-color: chartreuse;
                     color: #898989;
@@ -1514,554 +1533,523 @@
                 font-weight: bold;
                 text-shadow: 1px 1px 0 #fff;
             }
-
-    </style>
-</head>
-<body onload="onBodyLoad();">
-<div data-role="page">
-    <div style="margin-top:20px" data-theme="b" data-role="header">
-        <h1>Demo App</h1>
-    </div>
-    <!-- /header -->
-    <div data-role="content">
-        <div align="center">
-            <img src="img/logo.png" alt="Layer7 Logo" width="86" height="72">
-        </div>
-        <ul data-role="listview" data-inset="true" data-filter="false" id="actionsListView">
-            <li data-role="collapsible" data-iconpos="right" data-inset="false">
-                <h2>MAS Lifecycle</h2>
-                <ul data-role="listview" data-theme="b">
-                    <li data-icon="false"><a href="#" id="init">MAS Init<textarea class='error'
-                                                                                  style="display:none;"
-                                                                                  readonly=""></textarea></a>
-                    </li>
-                    <li data-icon="false"><a href="#" id="setAuthCallbackHandler">MAS Set Custom
-                        AuthCallbackHandler
-                        <textarea class='error' style="display:none;" readonly=""></textarea></a>
-                    </li>
-                    <li data-icon="false"><a href="#" id="removeAuthCallbackHandler">MAS Remove
-                        Custom AuthCallbackHandler
-                        <textarea class='error' style="display:none;" readonly=""></textarea></a>
-                    </li>
-                    <li data-icon="false"><a href="#" id="setGrantFlowPassword">MAS GrantFlow:
-                        password<textarea class='error' style="display:none;"
-                                          readonly=""></textarea></a>
-                    </li>
-                    <li data-icon="false"><a href="#" id="setGrantFlowClientCredential">MAS
-                        GrantFlow: client credential<textarea class='error' style="display:none;"
-                                                              readonly=""></textarea></a>
-                    </li>
-                    <li data-icon="false"><a href="#" id="setConfigName">MAS set configuration file
-                        name <input type="text" name="configName"
-                                    placeholder="configName"/><textarea class='error'
-                                                                        style="display:none;"
-                                                                        readonly=""></textarea></a>
+            </style>
+    </head>
+    <body onload="onBodyLoad();">
+        <div data-role="page">
+            <div style="margin-top:20px" data-theme="b" data-role="header">
+                <h1>Demo App</h1>
+            </div>
+            <!-- /header -->
+            <div data-role="content">
+                <div align="center">
+                    <img src="img/logo.png" alt="Layer7 Logo" width="86" height="72">
+                        </div>
+                <ul data-role="listview" data-inset="true" data-filter="false" id="actionsListView">
+                    <li data-role="collapsible" data-iconpos="right" data-inset="false">
+                        <h2>MAS Lifecycle</h2>
+                        <ul data-role="listview" data-theme="b">
+                            <li data-icon="false"><a href="#" id="init">MAS Init<textarea class='error'
+                                style="display:none;"
+                                readonly=""></textarea></a>
+                            </li>
+                            <li data-icon="false"><a href="#" id="setAuthCallbackHandler">MAS Set Custom AuthCallbackHandler
+                                <textarea class='error' style="display:none;" readonly=""></textarea></a>
+                            </li>
+                            <li data-icon="false"><a href="#" id="removeAuthCallbackHandler">MAS Remove Custom AuthCallbackHandler
+                                <textarea class='error' style="display:none;" readonly=""></textarea></a>
+                            </li>
+                            <li data-icon="false"><a href="#" id="setGrantFlowPassword">MAS GrantFlow:
+                                password<textarea class='error' style="display:none;"
+                                    readonly=""></textarea></a>
+                            </li>
+                            <li data-icon="false"><a href="#" id="setGrantFlowClientCredential">MAS
+                                GrantFlow: client credential<textarea class='error' style="display:none;"
+                                    readonly=""></textarea></a>
+                            </li>
+                            <li data-icon="false"><a href="#" id="setConfigName">MAS set configuration file
+                                name <input type="text" name="configName"
+                                placeholder="configName"/><textarea class='error'
+                                    style="display:none;"
+                                    readonly=""></textarea></a>
+                            </li>
+                            <li data-role="collapsible" data-iconpos="right" data-inset="false">
+                                <h2>JWKS Settings</h2>
+                                <ul data-role="listview" data-theme="b">
+                                    <li data-icon="false">
+                                        <a href="#" id="enableJwksPreload">
+                                            MAS enable JWKS
+                                            <select id="enableJwksPreloadBool" name="enableJwksPreloadBoolValue">
+                                                <option value="true">True</option>
+                                                <option value="false">False</option>
+                                            </select>
+                                            <textarea class='error' style="display:none;"
+                                                readonly=""></textarea>
+                                        </a>
+                                    </li>
+                                    <li data-icon="false"><a href="#" id="isJwksPreloadEnabled">MAS isJwksPreloadEnabled <textarea
+                                        class='error' style="display:none;" readonly=""></textarea></a></li>
+                                </ul>
+                            </li>
+                            <li data-icon="false"><a href="#" id="start">MAS start<textarea class='error'
+                                style="display:none;"
+                                readonly=""></textarea></a>
+                            </li>
+                            <li data-icon="false"><a href="#" id="startWithDefault">MAS start with new
+                                configuration discarding local storage<textarea class='error'
+                                    style="display:none;"
+                                    readonly=""></textarea></a>
+                            </li>
+                            <li data-icon="false"><a href="#" id="startWithJSON">MAS start with JSON <input
+                                type="text" name="jsonObject"
+                                placeholder="JSON object in text"/><textarea class='error'
+                                    style="display:none;"
+                                    readonly=""></textarea></a>
+                            </li>
+                            <li data-icon="false"><a href="#" id="startWithURL">MAS start with URL <input
+                                type="text" name="configUrl" placeholder="URL in text"/><textarea
+                                    class='error' style="display:none;" readonly=""></textarea></a></li>
+                            <li data-icon="false"><a href="#" id="stop">MAS stop<textarea class='error'
+                                style="display:none;"
+                                readonly=""></textarea></a>
+                            </li>
+                            <li data-icon="false"><a href="#" id="enableBrowserBasedAuthentication">MAS enableBrowserBasedAuthentication<textarea class='error'
+                                style="display:none;"
+                                readonly=""></textarea></a>
+                            </li>
+                        </ul>
                     </li>
                     <li data-role="collapsible" data-iconpos="right" data-inset="false">
-                        <h2>JWKS Settings</h2>
+                        <h2>MAS UI Customization</h2>
+                        <ul data-role="listview" data-theme="b">
+                            <li data-icon="false"><a href="#" id="useNativeMASUI">Use Native MASUI<textarea
+                                class='error' style="display:none;" readonly=""></textarea></a></li>
+                            <li data-icon="false"><a href="#" id="setCustomLoginPage">MAS set custom login
+                                page <input type="text" name="loginPageName"
+                                placeholder="loginPageName"/><textarea class='error'
+                                    style="display:none;"
+                                    readonly=""></textarea></a>
+                            </li>
+                            <li data-icon="false"><a href="#" id="setCustomOTPChannelsPage">MAS set custom
+                                OTP Channels page <input type="text" name="otpChannelsPageName"
+                                placeholder="otpChannelsPageName"/><textarea
+                                    class='error' style="display:none;" readonly=""></textarea></a>
+                            </li>
+                            <li data-icon="false"><a href="#" id="setCustomOTPPage">MAS set custom OTP page
+                                <input type="text" name="otpPageName" placeholder="otpPageName"/><textarea
+                                    class='error' style="display:none;" readonly=""></textarea></a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li data-role="collapsible" data-iconpos="right" data-inset="false">
+                        <h2>MAS User</h2>
+                        <ul data-role="listview" data-theme="b">
+                            <li data-icon="false"><a href="#" id="getCurrentUser">MASUser
+                                getCurrentUser<textarea class='error' style="display:none;"
+                                    readonly=""></textarea></a>
+                            </li>
+                            <li data-icon="false"><a href="#" id="getUsername">MASUser getUsername<textarea
+                                class='error' style="display:none;" readonly=""></textarea></a></li>
+                            <li data-icon="false"><a href="#" id="getName">MASUser getFullName<textarea
+                                class='error' style="display:none;" readonly=""></textarea></a></li>
+                            <li data-icon="false"><a href="#" id="isSessionLocked">MASUser
+                                isSessionLocked<textarea class='error' style="display:none;"
+                                    readonly=""></textarea></a>
+                            </li>
+                            <li data-icon="false"><a href="#" id="lockSession">MASUser lockSession<textarea
+                                class='error' style="display:none;" readonly=""></textarea></a></li>
+                            <li data-icon="false"><a href="#" id="unlockSession">MASUser
+                                unlockSession<textarea class='error' style="display:none;"
+                                    readonly=""></textarea></a>
+                            </li>
+                            <li data-icon="false"><a href="#" id="unlockSessionWithMessage">MASUser
+                                unlockSessionWithMessage<textarea class='error' style="display:none;"
+                                    readonly=""></textarea></a>
+                            </li>
+                            <li data-icon="false"><a href="#" id="removeSessionLock">MASUser
+                                removeSessionLock<textarea class='error' style="display:none;"
+                                    readonly=""></textarea></a>
+                            </li>
+                            <li data-icon="false"><a href="#" id="isUserAuthenticated">MASUser
+                                isAuthenticated<textarea class='error' style="display:none;"
+                                    readonly=""></textarea></a>
+                            </li>
+                            <li data-icon="false"><a href="#" id="getAccessToken">MASUser Access
+                                Token<textarea class='error' style="display:none;"
+                                    readonly=""></textarea></a>
+                            </li>
+                            <li data-icon="false"><a href="#" id="listAttributes">MASUser List All
+                                Attributes<textarea class='error' style="display:none;"
+                                    readonly=""></textarea></a>
+                            </li>
+                            <li data-icon="false">
+                                <a href="#" id="enableIdTokenValidation">Enable ID Token Validation
+                                    <select id="enableValidation" name="enableValidation">
+                                        <option value="true">True</option>
+                                        <option value="false">False</option>
+                                    </select>
+                                    <textarea class='error' style="display:none;" readonly=""></textarea>
+                                </a>
+                            </li>
+                            <li data-icon="false"><a href="#" id="isIdTokenValidationEnabled">Is ID Token Validation Enabled<textarea class='error' style="display:none;"
+                                readonly=""></textarea></a>
+                            </li>
+                            <li data-icon="false"><a href="#" id="userLogin">MASUser login with username and
+                                password <input type="text" name="userLoginUsername"
+                                placeholder="userLoginUsername:username"/><input type="text"
+                                name="userLoginPassword"
+                                placeholder="userLoginUsername:password"/><textarea
+                                    class='error' style="display:none;" readonly=""></textarea></a>
+                            </li>
+                            <li data-icon="false"><a href="#" id="userLoginAuthCred">MASUserAuthCredentials
+                                login with username and password <input type="text"
+                                name="userLoginUsernameAuthCred"
+                                placeholder="userLoginUsernameAuthCred:username"/><input
+                                type="text" name="userLoginPasswordAuthCred"
+                                placeholder="userLoginUsernameAuthCred:password"/><textarea class='error'
+                                    style="display:none;"
+                                    readonly=""></textarea></a>
+                            </li>
+                            <li data-icon="false"><a href="#" id="browserBasedLogin">MASUser initializeWithBrowserBasedAuthentication
+                                <textarea class='error' style="display:none;" readonly="">
+                                    
+                                </textarea></a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li data-role="collapsible" data-iconpos="right" data-inset="false">
+                        <h2>MAS Device</h2>
+                        <ul data-role="listview" data-theme="b">
+                            <li data-icon="false"><a href="#" id="isDeviceRegistered">MASDevice
+                                isDeviceRegistered<textarea class='error' style="display:none;"
+                                    readonly=""></textarea></a>
+                            </li>
+                            <li data-icon="false"><a href="#" id="getDeviceIdentifier">MASDevice
+                                getDeviceIdentifier<textarea class='error' style="display:none;"
+                                    readonly=""></textarea></a>
+                            </li>
+                            <li data-icon="false"><a href="#" id="getCurrentDevice">MASDevice
+                                getCurrentDevice<textarea class='error' style="display:none;"
+                                    readonly=""></textarea></a>
+                            </li>
+                            <li data-role="collapsible" data-iconpos="right" data-inset="false">
+                                <h2>MASDevice Metadata Management</h2>
+                                <ul data-role="listview" data-theme="b">
+                                    <li data-icon="false">
+                                        <a href="#" id="addAttribute">
+                                            Add Attribute
+                                            <input type="text" name="addAttrAttributeName" placeholder="addAttribute:Attribute Name"/>
+                                            <input type="text" name="addAttrAttributeValue" placeholder="addAttribute:Attribute Value"/>
+                                            <textarea class='error' style="display:none;"  readonly=""></textarea>
+                                        </a>
+                                    </li>
+                                    <li data-icon="false">
+                                        <a href="#" id="removeAttribute">
+                                            Remove an Attribute
+                                            <input type="text" name="removeAttrAttributeName" placeholder="removeAttribute:Attribute Name"/>
+                                            <textarea class='error' style="display:none;"  readonly=""></textarea>
+                                        </a>
+                                    </li>
+                                    <li data-icon="false">
+                                        <a href="#" id="removeAllAttributes">
+                                            Remove all Attributes
+                                            <textarea class='error' style="display:none;"  readonly=""></textarea>
+                                        </a>
+                                    </li>
+                                    <li data-icon="false">
+                                        <a href="#" id="getAttribute">
+                                            Get Attribute
+                                            <input type="text" name="getAttrAttributeName" placeholder="getAttribute:Attribute Name"/>
+                                            <textarea class='error' style="display:none;"  readonly=""></textarea>
+                                        </a>
+                                    </li>
+                                    <li data-icon="false">
+                                        <a href="#" id="getAttributes">
+                                            Get all Attributes
+                                            <textarea class='error' style="display:none;"  readonly=""></textarea>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                    <li data-role="collapsible" data-iconpos="right" data-inset="false">
+                        <h2>MAS Enterprise Browser</h2>
+                        <ul data-role="listview" data-theme="b">
+                            <li data-icon="false"><a href="#" id="initEnterpriseBrowser">MAS
+                                InitEnterpriseBrowser<textarea class='error' style="display:none;"
+                                    readonly=""></textarea></a>
+                            </li>
+                            <li data-icon="false"><a href="#" id="retrieveEnterpriseApps">MASApplication
+                                Retrieve Enterprise Apps<textarea class='error' style="display:none;"
+                                    readonly=""></textarea></a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li data-role="collapsible" data-iconpos="right" data-inset="false">
+                        <h2>MAS CRUD Operations</h2>
                         <ul data-role="listview" data-theme="b">
                             <li data-icon="false">
-                                <a href="#" id="enableJwksPreload">
-                                    MAS enable JWKS
-                                    <select id="enableJwksPreloadBool"
-                                            name="enableJwksPreloadBoolValue">
+                                <a href="#" id="setSecurityConfiguration">
+                                    MAS Set Security Configuration
+                                    <input type="text" name="host"
+                                    placeholder="hostname with optional port"/>
+                                    <label for="isPublic">Is Public Server:</label>
+                                    <select id="isPublic" name="isPublic">
+                                        <option value="false">False</option>
+                                        <option value="true">True</option>
+                                    </select>
+                                    <label for="trustPublicPKI">Trust Public PKI:</label>
+                                    <select id="trustPublicPKI" name="trustPublicPKI">
+                                        <option value="false">False</option>
+                                        <option value="true">True</option>
+                                    </select>
+                                    <label for="pinningMode">Pinning Options:</label>
+                            <select id="pinningMode" name="pinningMode">
+                                <option value="PublicKeyHash">Public Key hash</option>
+                                <option value="CertificateChain">Certificate Chain</option>
+                                <option value="IntermediateCertificate">Intermediate Certificate</option>
+                            </select>
+                                    <input type="text" name="certificate"
+                                    placeholder="Certificates as PEM Strings"/>
+                                    <input type="text" name="publicKeyHash"
+                                    placeholder="Public Key Hashes as strings"/>
+                                    <textarea class='error' style="display:none;" readonly=""></textarea>
+                                </a>
+                            </li>
+                            <li data-icon="false">
+                                <a href="#" id="getCRUD">
+                                    MAS get
+                                    <input type="text" name="path" placeholder="MASGet:API path"/>
+                                    <label for="requestTypeGet">Request Type:</label>
+                                    <select id="requestTypeGet" name="requestType">
+                                        <option value="json">JSON</option>
+                                        <option value="scimJSON">SCIM JSON</option>
+                                        <option value="text">Plain Text</option>
+                                        <option value="urlEncoded">URL Encoded</option>
+                                        <option value="xml">XML</option>
+                                    </select>
+                                    <label for="responseTypeGet">Response Type:</label>
+                                    <select id="responseTypeGet" name="responseType">
+                                        <option value="json">JSON</option>
+                                        <option value="scimJSON">SCIM JSON</option>
+                                        <option value="text">Plain Text</option>
+                                        <option value="urlEncoded">URL Encoded</option>
+                                        <option value="xml">XML</option>
+                                    </select>
+                                    <input type="text" name="parameter"
+                                    placeholder="MASGet:Parameter in JSON format"/>
+                                    <input type="text" name="header" placeholder="MASGet:Header in JSON format"/>
+                                    <label for="isPublicGet">is Public:</label>
+                                    <select id="isPublicGet" name="isPublic">
+                                        <option value="false">False</option>
+                                        <option value="true">True</option>
+                                    </select>
+                                    <textarea class='error' style="display:none;" readonly=""></textarea>
+                                </a>
+                            </li>
+                            <li data-icon="false">
+                                <a href="#" id="putCRUD">
+                                    MAS put
+                                    <input type="text" name="path" placeholder="MASPut:API path"/>
+                                    <label for="requestTypePut">Request Type:</label>
+                                    <select id="requestTypePut" name="requestType">
+                                        <option value="json">JSON</option>
+                                        <option value="scimJSON">SCIM JSON</option>
+                                        <option value="text">Plain Text</option>
+                                        <option value="urlEncoded">URL Encoded</option>
+                                        <option value="xml">XML</option>
+                                    </select>
+                                    <label for="responseTypePut">Response Type:</label>
+                                    <select id="responseTypePut" name="responseType">
+                                        <option value="json">JSON</option>
+                                        <option value="scimJSON">SCIM JSON</option>
+                                        <option value="text">Plain Text</option>
+                                        <option value="urlEncoded">URL Encoded</option>
+                                        <option value="xml">XML</option>
+                                    </select>
+                                    <input type="text" name="parameter"
+                                    placeholder="MASPut:Parameter in JSON format"/>
+                                    <input type="text" name="header" placeholder="MASPut:Header in JSON format"/>
+                                    <label for="isPublicPut">is Public:</label>
+                                    <select id="isPublicPut" name="isPublic">
+                                        <option value="false">False</option>
+                                        <option value="true">True</option>
+                                    </select>
+                                    <textarea class='error' style="display:none;" readonly=""></textarea>
+                                </a>
+                            </li>
+                            <li data-icon="false">
+                                <a href="#" id="postCRUD">
+                                    MAS post
+                                    <input type="text" name="path" placeholder="MASPost:API path"/>
+                                    <label for="requestTypePost">Request Type:</label>
+                                    <select id="requestTypePost" name="requestType">
+                                        <option value="json">JSON</option>
+                                        <option value="scimJSON">SCIM JSON</option>
+                                        <option value="text">Plain Text</option>
+                                        <option value="urlEncoded">URL Encoded</option>
+                                        <option value="xml">XML</option>
+                                    </select>
+                                    <label for="responseTypePost">Response Type:</label>
+                                    <select id="responseTypePost" name="responseType">
+                                        <option value="json">JSON</option>
+                                        <option value="scimJSON">SCIM JSON</option>
+                                        <option value="text">Plain Text</option>
+                                        <option value="urlEncoded">URL Encoded</option>
+                                        <option value="xml">XML</option>
+                                    </select>
+                                    <input type="text" name="parameter"
+                                    placeholder="MASPost:Parameter in JSON format"/>
+                                    <input type="text" name="header" placeholder="MASPost:Header in JSON format"/>
+                                    <label for="isPublicPost">is Public:</label>
+                                    <select id="isPublicPost" name="isPublic">
+                                        <option value="false">False</option>
+                                        <option value="true">True</option>
+                                    </select>
+                                    <textarea class='error' style="display:none;" readonly=""></textarea>
+                                </a>
+                            </li>
+                            <li data-icon="false">
+                                <a href="#" id="deleteCRUD">
+                                    MAS delete
+                                    <input type="text" name="path" placeholder="MASDelete:API path"/>
+                                    <label for="requestTypeD">Request Type:</label>
+                                    <select id="requestTypeD" name="requestType">
+                                        <option value="json">JSON</option>
+                                        <option value="scimJSON">SCIM JSON</option>
+                                        <option value="text">Plain Text</option>
+                                        <option value="urlEncoded">URL Encoded</option>
+                                        <option value="xml">XML</option>
+                                    </select>
+                                    <label for="responseTypeD">Response Type:</label>
+                                    <select id="responseTypeD" name="responseType">
+                                        <option value="json">JSON</option>
+                                        <option value="scimJSON">SCIM JSON</option>
+                                        <option value="text">Plain Text</option>
+                                        <option value="urlEncoded">URL Encoded</option>
+                                        <option value="xml">XML</option>
+                                    </select>
+                                    <input type="text" name="parameter"
+                                    placeholder="MASDelete:Parameter in JSON format"/>
+                                    <input type="text" name="header" placeholder="MASDelete:Header in JSON format"/>
+                                    <label for="isPublicDelete">is Public:</label>
+                                    <select id="isPublicDelete" name="isPublic">
+                                        <option value="false">False</option>
+                                        <option value="true">True</option>
+                                    </select>
+                                    <textarea class='error' style="display:none;" readonly=""></textarea>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li data-role="collapsible" data-iconpos="right" data-inset="false">
+                        <div data-role="popup" id="progressPopup">
+                            <progress max="100" value="0" id="progress"></progress>
+                        </div>
+                        <h2>MAS Multipart File Upload</h2>
+                        <ul data-role="listview" data-theme="b">
+                            <li data-icon="false">
+                                <a href="#" id="postMultiPartForm" data-rel="popup">
+                                    MAS MultipartForm upload
+                                    <input type="text" name="path" placeholder="MASUpload: Server API path" value="/test/multipart/"/>
+                                    <input type="text" name="parameter"
+                                    placeholder="MASGet:Parameter in JSON format"/>
+                                    <input type="text" name="header" placeholder="MASGet:Header in JSON format"/>
+                                    <label for="isPublicUpload">is Public:</label>
+                                    <select id="isPublicUpload" name="isPublic">
+                                        <option value="false">False</option>
+                                        <option value="true">True</option>
+                                    </select>
+                                    <label for="formDataTable">Multipart Form Data</label></br>
+                                    <table id="formDataTable" cellspacing="0">
+                                        <tr><td>First Name</td><td><input id="firstName" type="text" name="firstName" placeholder="First Name"/></td></tr>
+                                        <tr><td>Last Name</td><td><input id="lastName" type="text" name="lastName" placeholder="Last Name"/></td></tr>
+                                        <tr><td>Age</td><td><input id="age" type="text" name="age" placeholder="Age"/></td></tr>
+                                    </table>
+                                    <label for="chooseFiles">Select Files to Upload</label></br>
+                                    <input type="file" id="chooseFiles">
+                                        <textarea class='error' style="display:none;" readonly=""></textarea>
+                                        </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li data-role="collapsible" data-iconpos="right" data-inset="false">
+                        <h2>MAS Additionals</h2>
+                        <ul data-role="listview" data-theme="b">
+                            <li data-icon="false"><a href="#" id="gatewayIsReachable">MAS gatewayIsReachable<textarea
+                                class='error' style="display:none;" readonly=""></textarea></a></li>
+                            <li data-icon="false"><a href="#" id="scan">Scan QRCode<textarea class='error'
+                                style="display:none;"
+                                readonly=""></textarea></a>
+                            </li>
+                            <li data-icon="false"><a href="#" id="getMASState">MAS getMASState <textarea
+                                class='error' style="display:none;" readonly=""></textarea></a></li>
+                        </ul>
+                    </li>
+                    <li data-role="collapsible" data-iconpos="right" data-inset="false">
+                        <h2>PKCE Settings</h2>
+                        <ul data-role="listview" data-theme="b">
+                            <li data-icon="false">
+                                <a href="#" id="enablePKCE">
+                                    MAS enable PKCE
+                                    <select id="enablePKCEBool" name="enablePKCEBoolValue">
                                         <option value="true">True</option>
                                         <option value="false">False</option>
                                     </select>
                                     <textarea class='error' style="display:none;"
-                                              readonly=""></textarea>
+                                        readonly=""></textarea>
                                 </a>
                             </li>
-                            <li data-icon="false"><a href="#" id="isJwksPreloadEnabled">MAS
-                                isJwksPreloadEnabled <textarea
-                                        class='error' style="display:none;" readonly=""></textarea></a>
-                            </li>
+                            <li data-icon="false"><a href="#" id="isPKCEEnabled">MAS isPKCEEnabled <textarea
+                                class='error' style="display:none;" readonly=""></textarea></a></li>
                         </ul>
                     </li>
-                    <li data-icon="false"><a href="#" id="start">MAS start<textarea class='error'
-                                                                                    style="display:none;"
-                                                                                    readonly=""></textarea></a>
-                    </li>
-                    <li data-icon="false"><a href="#" id="startWithDefault">MAS start with new
-                        configuration discarding local storage<textarea class='error'
-                                                                        style="display:none;"
-                                                                        readonly=""></textarea></a>
-                    </li>
-                    <li data-icon="false"><a href="#" id="startWithJSON">MAS start with JSON <input
-                            type="text" name="jsonObject"
-                            placeholder="JSON object in text"/><textarea class='error'
-                                                                         style="display:none;"
-                                                                         readonly=""></textarea></a>
-                    </li>
-                    <li data-icon="false"><a href="#" id="startWithURL">MAS start with URL <input
-                            type="text" name="configUrl" placeholder="URL in text"/><textarea
-                            class='error' style="display:none;" readonly=""></textarea></a></li>
-                    <li data-icon="false"><a href="#" id="stop">MAS stop<textarea class='error'
-                                                                                  style="display:none;"
-                                                                                  readonly=""></textarea></a>
-                    </li>
-                    <li data-icon="false"><a href="#" id="enableBrowserBasedAuthentication">MAS
-                        enableBrowserBasedAuthentication<textarea class='error'
-                                                                  style="display:none;"
-                                                                  readonly=""></textarea></a>
-                    </li>
-                </ul>
-            </li>
-            <li data-role="collapsible" data-iconpos="right" data-inset="false">
-                <h2>MAS UI Customization</h2>
-                <ul data-role="listview" data-theme="b">
-                    <li data-icon="false"><a href="#" id="useNativeMASUI">Use Native MASUI<textarea
-                            class='error' style="display:none;" readonly=""></textarea></a></li>
-                    <li data-icon="false"><a href="#" id="setCustomLoginPage">MAS set custom login
-                        page <input type="text" name="loginPageName"
-                                    placeholder="loginPageName"/><textarea class='error'
-                                                                           style="display:none;"
-                                                                           readonly=""></textarea></a>
-                    </li>
-                    <li data-icon="false"><a href="#" id="setCustomOTPChannelsPage">MAS set custom
-                        OTP Channels page <input type="text" name="otpChannelsPageName"
-                                                 placeholder="otpChannelsPageName"/><textarea
-                                class='error' style="display:none;" readonly=""></textarea></a>
-                    </li>
-                    <li data-icon="false"><a href="#" id="setCustomOTPPage">MAS set custom OTP page
-                        <input type="text" name="otpPageName" placeholder="otpPageName"/><textarea
-                                class='error' style="display:none;" readonly=""></textarea></a>
-                    </li>
-                </ul>
-            </li>
-            <li data-role="collapsible" data-iconpos="right" data-inset="false">
-                <h2>MAS User</h2>
-                <ul data-role="listview" data-theme="b">
-                    <li data-icon="false"><a href="#" id="getCurrentUser">MASUser
-                        getCurrentUser<textarea class='error' style="display:none;"
-                                                readonly=""></textarea></a>
-                    </li>
-                    <li data-icon="false"><a href="#" id="getUsername">MASUser getUsername<textarea
-                            class='error' style="display:none;" readonly=""></textarea></a></li>
-                    <li data-icon="false"><a href="#" id="getName">MASUser getFullName<textarea
-                            class='error' style="display:none;" readonly=""></textarea></a></li>
-                    <li data-icon="false"><a href="#" id="isSessionLocked">MASUser
-                        isSessionLocked<textarea class='error' style="display:none;"
-                                                 readonly=""></textarea></a>
-                    </li>
-                    <li data-icon="false"><a href="#" id="lockSession">MASUser lockSession<textarea
-                            class='error' style="display:none;" readonly=""></textarea></a></li>
-                    <li data-icon="false"><a href="#" id="unlockSession">MASUser
-                        unlockSession<textarea class='error' style="display:none;"
-                                               readonly=""></textarea></a>
-                    </li>
-                    <li data-icon="false"><a href="#" id="unlockSessionWithMessage">MASUser
-                        unlockSessionWithMessage<textarea class='error' style="display:none;"
-                                                          readonly=""></textarea></a>
-                    </li>
-                    <li data-icon="false"><a href="#" id="removeSessionLock">MASUser
-                        removeSessionLock<textarea class='error' style="display:none;"
-                                                   readonly=""></textarea></a>
-                    </li>
-                    <li data-icon="false"><a href="#" id="isUserAuthenticated">MASUser
-                        isAuthenticated<textarea class='error' style="display:none;"
-                                                 readonly=""></textarea></a>
-                    </li>
-                    <li data-icon="false"><a href="#" id="getAccessToken">MASUser Access
-                        Token<textarea class='error' style="display:none;"
-                                       readonly=""></textarea></a>
-                    </li>
-                    <li data-icon="false"><a href="#" id="listAttributes">MASUser List All
-                        Attributes<textarea class='error' style="display:none;"
-                                            readonly=""></textarea></a>
-                    </li>
-                    <li data-icon="false">
-                        <a href="#" id="enableIdTokenValidation">Enable ID Token Validation
-                            <select id="enableValidation" name="enableValidation">
-                                <option value="true">True</option>
-                                <option value="false">False</option>
-                            </select>
-                            <textarea class='error' style="display:none;" readonly=""></textarea>
-                        </a>
-                    </li>
-                    <li data-icon="false"><a href="#" id="isIdTokenValidationEnabled">Is ID Token
-                        Validation Enabled<textarea class='error' style="display:none;"
-                                                    readonly=""></textarea></a>
-                    </li>
-                    <li data-icon="false"><a href="#" id="userLogin">MASUser login with username and
-                        password <input type="text" name="userLoginUsername"
-                                        placeholder="userLoginUsername:username"/><input type="text"
-                                                                                         name="userLoginPassword"
-                                                                                         placeholder="userLoginUsername:password"/><textarea
-                                class='error' style="display:none;" readonly=""></textarea></a>
-                    </li>
-                    <li data-icon="false"><a href="#" id="userLoginAuthCred">MASUserAuthCredentials
-                        login with username and password <input type="text"
-                                                                name="userLoginUsernameAuthCred"
-                                                                placeholder="userLoginUsernameAuthCred:username"/><input
-                                type="text" name="userLoginPasswordAuthCred"
-                                placeholder="userLoginUsernameAuthCred:password"/><textarea
-                                class='error'
-                                style="display:none;"
-                                readonly=""></textarea></a>
-                    </li>
-                    <li data-icon="false"><a href="#" id="browserBasedLogin">MASUser
-                        initializeWithBrowserBasedAuthentication
-                        <textarea class='error' style="display:none;" readonly="">
-                                    
-                                </textarea></a>
-                    </li>
-                </ul>
-            </li>
-            <li data-role="collapsible" data-iconpos="right" data-inset="false">
-                <h2>MAS Device</h2>
-                <ul data-role="listview" data-theme="b">
-                    <li data-icon="false"><a href="#" id="isDeviceRegistered">MASDevice
-                        isDeviceRegistered<textarea class='error' style="display:none;"
-                                                    readonly=""></textarea></a>
-                    </li>
-                    <li data-icon="false"><a href="#" id="getDeviceIdentifier">MASDevice
-                        getDeviceIdentifier<textarea class='error' style="display:none;"
-                                                     readonly=""></textarea></a>
-                    </li>
-                    <li data-icon="false"><a href="#" id="getCurrentDevice">MASDevice
-                        getCurrentDevice<textarea class='error' style="display:none;"
-                                                  readonly=""></textarea></a>
+                    
+                    <li data-role="collapsible" data-iconpos="right" data-inset="false">
+                        <h2>JWT Signing</h2>
+                        <ul data-role="listview" data-theme="b">
+                            <li data-icon="false"><a href="#" id="signWithClaims">MAS SignWithClaims<input
+                                type="text" name="claimsJSON"
+                                placeholder="Claim JSON"/>
+                                <textarea class='error' style="display:none;" readonly=""></textarea></a>
+                            </li>
+                            <li data-icon="false"><a href="#" id="signWithClaimsPrivateKey">MAS
+                                SignWithClaimsPrivateKey
+                                <input type="text" name="claimsJSON"
+                                placeholder="Claim JSON"/>
+                                <input type="text" name="claimsPrivateKey"
+                                placeholder="Private Key as base64 string with header/footer"/>
+                                <textarea
+                                    class='error' style="display:none;" readonly=""></textarea></a>
+                            </li>
+                        </ul>
                     </li>
                     <li data-role="collapsible" data-iconpos="right" data-inset="false">
-                        <h2>MASDevice Metadata Management</h2>
+                        <h2>MASUser logout</h2>
                         <ul data-role="listview" data-theme="b">
                             <li data-icon="false">
-                                <a href="#" id="addAttribute">
-                                    Add Attribute
-                                    <input type="text" name="addAttrAttributeName"
-                                           placeholder="addAttribute:Attribute Name"/>
-                                    <input type="text" name="addAttrAttributeValue"
-                                           placeholder="addAttribute:Attribute Value"/>
+                                <a href="#" id="userLogoutForce">
+                                    MASUser Logout With Force
+                                    <select id="enableForceBool" name="enableForceBool">
+                                        <option value="true">True</option>
+                                        <option value="false">False</option>
+                                    </select>
                                     <textarea class='error' style="display:none;"
-                                              readonly=""></textarea>
-                                </a>
-                            </li>
-                            <li data-icon="false">
-                                <a href="#" id="removeAttribute">
-                                    Remove an Attribute
-                                    <input type="text" name="removeAttrAttributeName"
-                                           placeholder="removeAttribute:Attribute Name"/>
-                                    <textarea class='error' style="display:none;"
-                                              readonly=""></textarea>
-                                </a>
-                            </li>
-                            <li data-icon="false">
-                                <a href="#" id="removeAllAttributes">
-                                    Remove all Attributes
-                                    <textarea class='error' style="display:none;"
-                                              readonly=""></textarea>
-                                </a>
-                            </li>
-                            <li data-icon="false">
-                                <a href="#" id="getAttribute">
-                                    Get Attribute
-                                    <input type="text" name="getAttrAttributeName"
-                                           placeholder="getAttribute:Attribute Name"/>
-                                    <textarea class='error' style="display:none;"
-                                              readonly=""></textarea>
-                                </a>
-                            </li>
-                            <li data-icon="false">
-                                <a href="#" id="getAttributes">
-                                    Get all Attributes
-                                    <textarea class='error' style="display:none;"
-                                              readonly=""></textarea>
+                                        readonly=""></textarea>
                                 </a>
                             </li>
                         </ul>
                     </li>
+                    
+                    <li data-icon="false"><a href="#" id="deregisterDevice">MASDevice deregister<textarea
+                        class='error' style="display:none;" readonly=""></textarea></a></li>
+                    <li data-icon="false"><a href="#" id="resetLocally">MASDevice resetLocally<textarea
+                        class='error' style="display:none;" readonly=""></textarea></a></li>
                 </ul>
-            </li>
-            <li data-role="collapsible" data-iconpos="right" data-inset="false">
-                <h2>MAS Enterprise Browser</h2>
-                <ul data-role="listview" data-theme="b">
-                    <li data-icon="false"><a href="#" id="initEnterpriseBrowser">MAS
-                        InitEnterpriseBrowser<textarea class='error' style="display:none;"
-                                                       readonly=""></textarea></a>
-                    </li>
-                    <li data-icon="false"><a href="#" id="retrieveEnterpriseApps">MASApplication
-                        Retrieve Enterprise Apps<textarea class='error' style="display:none;"
-                                                          readonly=""></textarea></a>
-                    </li>
-                </ul>
-            </li>
-            <li data-role="collapsible" data-iconpos="right" data-inset="false">
-                <h2>MAS CRUD Operations</h2>
-                <ul data-role="listview" data-theme="b">
-                    <li data-icon="false">
-                        <a href="#" id="setSecurityConfiguration">
-                            MAS Set Security Configuration
-                            <input type="text" name="host"
-                                   placeholder="hostname with optional port"/>
-                            <label for="isPublic">Is Public Server:</label>
-                            <select id="isPublic" name="isPublic">
-                                <option value="false">False</option>
-                                <option value="true">True</option>
-                            </select>
-                            <label for="trustPublicPKI">Trust Public PKI:</label>
-                            <select id="trustPublicPKI" name="trustPublicPKI">
-                                <option value="false">False</option>
-                                <option value="true">True</option>
-                            </select>
-                            <input type="text" name="certificate"
-                                   placeholder="Certificates as PEM Strings"/>
-                            <input type="text" name="publicKeyHash"
-                                   placeholder="Public Key Hashes as strings"/>
-                            <textarea class='error' style="display:none;" readonly=""></textarea>
-                        </a>
-                    </li>
-                    <li data-icon="false">
-                        <a href="#" id="getCRUD">
-                            MAS get
-                            <input type="text" name="path" placeholder="MASGet:API path"/>
-                            <label for="requestTypeGet">Request Type:</label>
-                            <select id="requestTypeGet" name="requestType">
-                                <option value="json">JSON</option>
-                                <option value="scimJSON">SCIM JSON</option>
-                                <option value="text">Plain Text</option>
-                                <option value="urlEncoded">URL Encoded</option>
-                                <option value="xml">XML</option>
-                            </select>
-                            <label for="responseTypeGet">Response Type:</label>
-                            <select id="responseTypeGet" name="responseType">
-                                <option value="json">JSON</option>
-                                <option value="scimJSON">SCIM JSON</option>
-                                <option value="text">Plain Text</option>
-                                <option value="urlEncoded">URL Encoded</option>
-                                <option value="xml">XML</option>
-                            </select>
-                            <input type="text" name="parameter"
-                                   placeholder="MASGet:Parameter in JSON format"/>
-                            <input type="text" name="header"
-                                   placeholder="MASGet:Header in JSON format"/>
-                            <label for="isPublicGet">is Public:</label>
-                            <select id="isPublicGet" name="isPublic">
-                                <option value="false">False</option>
-                                <option value="true">True</option>
-                            </select>
-                            <textarea class='error' style="display:none;" readonly=""></textarea>
-                        </a>
-                    </li>
-                    <li data-icon="false">
-                        <a href="#" id="putCRUD">
-                            MAS put
-                            <input type="text" name="path" placeholder="MASPut:API path"/>
-                            <label for="requestTypePut">Request Type:</label>
-                            <select id="requestTypePut" name="requestType">
-                                <option value="json">JSON</option>
-                                <option value="scimJSON">SCIM JSON</option>
-                                <option value="text">Plain Text</option>
-                                <option value="urlEncoded">URL Encoded</option>
-                                <option value="xml">XML</option>
-                            </select>
-                            <label for="responseTypePut">Response Type:</label>
-                            <select id="responseTypePut" name="responseType">
-                                <option value="json">JSON</option>
-                                <option value="scimJSON">SCIM JSON</option>
-                                <option value="text">Plain Text</option>
-                                <option value="urlEncoded">URL Encoded</option>
-                                <option value="xml">XML</option>
-                            </select>
-                            <input type="text" name="parameter"
-                                   placeholder="MASPut:Parameter in JSON format"/>
-                            <input type="text" name="header"
-                                   placeholder="MASPut:Header in JSON format"/>
-                            <label for="isPublicPut">is Public:</label>
-                            <select id="isPublicPut" name="isPublic">
-                                <option value="false">False</option>
-                                <option value="true">True</option>
-                            </select>
-                            <textarea class='error' style="display:none;" readonly=""></textarea>
-                        </a>
-                    </li>
-                    <li data-icon="false">
-                        <a href="#" id="postCRUD">
-                            MAS post
-                            <input type="text" name="path" placeholder="MASPost:API path"/>
-                            <label for="requestTypePost">Request Type:</label>
-                            <select id="requestTypePost" name="requestType">
-                                <option value="json">JSON</option>
-                                <option value="scimJSON">SCIM JSON</option>
-                                <option value="text">Plain Text</option>
-                                <option value="urlEncoded">URL Encoded</option>
-                                <option value="xml">XML</option>
-                            </select>
-                            <label for="responseTypePost">Response Type:</label>
-                            <select id="responseTypePost" name="responseType">
-                                <option value="json">JSON</option>
-                                <option value="scimJSON">SCIM JSON</option>
-                                <option value="text">Plain Text</option>
-                                <option value="urlEncoded">URL Encoded</option>
-                                <option value="xml">XML</option>
-                            </select>
-                            <input type="text" name="parameter"
-                                   placeholder="MASPost:Parameter in JSON format"/>
-                            <input type="text" name="header"
-                                   placeholder="MASPost:Header in JSON format"/>
-                            <label for="isPublicPost">is Public:</label>
-                            <select id="isPublicPost" name="isPublic">
-                                <option value="false">False</option>
-                                <option value="true">True</option>
-                            </select>
-                            <textarea class='error' style="display:none;" readonly=""></textarea>
-                        </a>
-                    </li>
-                    <li data-icon="false">
-                        <a href="#" id="deleteCRUD">
-                            MAS delete
-                            <input type="text" name="path" placeholder="MASDelete:API path"/>
-                            <label for="requestTypeD">Request Type:</label>
-                            <select id="requestTypeD" name="requestType">
-                                <option value="json">JSON</option>
-                                <option value="scimJSON">SCIM JSON</option>
-                                <option value="text">Plain Text</option>
-                                <option value="urlEncoded">URL Encoded</option>
-                                <option value="xml">XML</option>
-                            </select>
-                            <label for="responseTypeD">Response Type:</label>
-                            <select id="responseTypeD" name="responseType">
-                                <option value="json">JSON</option>
-                                <option value="scimJSON">SCIM JSON</option>
-                                <option value="text">Plain Text</option>
-                                <option value="urlEncoded">URL Encoded</option>
-                                <option value="xml">XML</option>
-                            </select>
-                            <input type="text" name="parameter"
-                                   placeholder="MASDelete:Parameter in JSON format"/>
-                            <input type="text" name="header"
-                                   placeholder="MASDelete:Header in JSON format"/>
-                            <label for="isPublicDelete">is Public:</label>
-                            <select id="isPublicDelete" name="isPublic">
-                                <option value="false">False</option>
-                                <option value="true">True</option>
-                            </select>
-                            <textarea class='error' style="display:none;" readonly=""></textarea>
-                        </a>
-                    </li>
-                </ul>
-            </li>
-            <li data-role="collapsible" data-iconpos="right" data-inset="false">
-                <div data-role="popup" id="progressPopup">
-                    <progress max="100" value="0" id="progress"></progress>
-                </div>
-                <h2>MAS Multipart File Upload</h2>
-                <ul data-role="listview" data-theme="b">
-                    <li data-icon="false">
-                        <a href="#" id="postMultiPartForm" data-rel="popup">
-                            MAS MultipartForm upload
-                            <input type="text" name="path" placeholder="MASUpload: Server API path"
-                                   value="/test/multipart/"/>
-                            <input type="text" name="parameter"
-                                   placeholder="MASGet:Parameter in JSON format"/>
-                            <input type="text" name="header"
-                                   placeholder="MASGet:Header in JSON format"/>
-                            <label for="isPublicUpload">is Public:</label>
-                            <select id="isPublicUpload" name="isPublic">
-                                <option value="false">False</option>
-                                <option value="true">True</option>
-                            </select>
-                            <label for="formDataTable">Multipart Form Data</label></br>
-                            <table id="formDataTable" cellspacing="0">
-                                <tr>
-                                    <td>First Name</td>
-                                    <td><input id="firstName" type="text" name="firstName"
-                                               placeholder="First Name"/></td>
-                                </tr>
-                                <tr>
-                                    <td>Last Name</td>
-                                    <td><input id="lastName" type="text" name="lastName"
-                                               placeholder="Last Name"/></td>
-                                </tr>
-                                <tr>
-                                    <td>Age</td>
-                                    <td><input id="age" type="text" name="age" placeholder="Age"/>
-                                    </td>
-                                </tr>
-                            </table>
-                            <label for="chooseFiles">Select Files to Upload</label></br>
-                            <input type="file" id="chooseFiles">
-                            <textarea class='error' style="display:none;" readonly=""></textarea>
-                        </a>
-                    </li>
-                </ul>
-            </li>
-            <li data-role="collapsible" data-iconpos="right" data-inset="false">
-                <h2>MAS Additionals</h2>
-                <ul data-role="listview" data-theme="b">
-                    <li data-icon="false"><a href="#" id="gatewayIsReachable">MAS gatewayIsReachable<textarea
-                            class='error' style="display:none;" readonly=""></textarea></a></li>
-                    <li data-icon="false"><a href="#" id="scan">Scan QRCode<textarea class='error'
-                                                                                     style="display:none;"
-                                                                                     readonly=""></textarea></a>
-                    </li>
-                    <li data-icon="false"><a href="#" id="getMASState">MAS getMASState <textarea
-                            class='error' style="display:none;" readonly=""></textarea></a></li>
-                </ul>
-            </li>
-            <li data-role="collapsible" data-iconpos="right" data-inset="false">
-                <h2>PKCE Settings</h2>
-                <ul data-role="listview" data-theme="b">
-                    <li data-icon="false">
-                        <a href="#" id="enablePKCE">
-                            MAS enable PKCE
-                            <select id="enablePKCEBool" name="enablePKCEBoolValue">
-                                <option value="true">True</option>
-                                <option value="false">False</option>
-                            </select>
-                            <textarea class='error' style="display:none;"
-                                      readonly=""></textarea>
-                        </a>
-                    </li>
-                    <li data-icon="false"><a href="#" id="isPKCEEnabled">MAS isPKCEEnabled <textarea
-                            class='error' style="display:none;" readonly=""></textarea></a></li>
-                </ul>
-            </li>
-
-            <li data-role="collapsible" data-iconpos="right" data-inset="false">
-                <h2>JWT Signing</h2>
-                <ul data-role="listview" data-theme="b">
-                    <li data-icon="false"><a href="#" id="signWithClaims">MAS SignWithClaims<input
-                            type="text" name="claimsJSON"
-                            placeholder="Claim JSON"/>
-                        <textarea class='error' style="display:none;" readonly=""></textarea></a>
-                    </li>
-                    <li data-icon="false"><a href="#" id="signWithClaimsPrivateKey">MAS
-                        SignWithClaimsPrivateKey
-                        <input type="text" name="claimsJSON"
-                               placeholder="Claim JSON"/>
-                        <input type="text" name="claimsPrivateKey"
-                               placeholder="Private Key as base64 string with header/footer"/>
-                        <textarea
-                                class='error' style="display:none;" readonly=""></textarea></a>
-                    </li>
-                </ul>
-            </li>
-            <li data-role="collapsible" data-iconpos="right" data-inset="false">
-                <h2>MASUser logout</h2>
-                <ul data-role="listview" data-theme="b">
-                    <li data-icon="false">
-                        <a href="#" id="userLogoutForce">
-                            MASUser Logout With Force
-                            <select id="enableForceBool" name="enableForceBool">
-                                <option value="true">True</option>
-                                <option value="false">False</option>
-                            </select>
-                            <textarea class='error' style="display:none;"
-                                      readonly=""></textarea>
-                        </a>
-                    </li>
-                </ul>
-            </li>
-
-            <li data-icon="false"><a href="#" id="deregisterDevice">MASDevice deregister<textarea
-                    class='error' style="display:none;" readonly=""></textarea></a></li>
-            <li data-icon="false"><a href="#" id="resetLocally">MASDevice resetLocally<textarea
-                    class='error' style="display:none;" readonly=""></textarea></a></li>
-        </ul>
-    </div>
-    <!-- /content -->
-</div>
-<!-- /page -->
-</body>
+            </div>
+            <!-- /content -->
+        </div>
+        <!-- /page -->
+    </body>
 </html>
